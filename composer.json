@@ -1,0 +1,49 @@
+{
+    "name": "tbessenreither/xpath-scraper",
+    "description": "A Symfony bundle providing XPath scraping capabilities for Symfony",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tobias Bessenreither"
+        }
+    ],
+    "require": {
+        "php": "^8.4",
+        "symfony/config": "^7.4",
+        "symfony/dependency-injection": "^7.4",
+        "symfony/http-kernel": "^7.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0",
+        "symfony/framework-bundle": "^7.4",
+        "symfony/phpunit-bridge": "^7.4",
+        "symfony/stopwatch": "^7.4",
+        "symfony/console": "^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Tbessenreither\\XPathScraper\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tbessenreither\\XPathScraper\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "rm -f .phpunit.result.cache"
+        ],
+        "post-update-cmd": [
+            "rm -f .phpunit.result.cache"
+        ]
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "platform": {
+            "php": "8.4.0"
+        }
+    }
+}
