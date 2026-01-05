@@ -9,24 +9,20 @@ class QueryElement implements SelectorInterface
 {
 
     /**
-     * @param SelectorInterface[] $classLogics
-     * @param SelectorInterface[] $attributeLogics
+     * @param string $tag
+     * @param SelectorInterface[] $attributes
      */
     public function __construct(
-        private string $tag,
-        private array $classLogics = [],
-        private array $attributeLogics = [],
+        private string $tag = '*',
+        private array $attributes = [],
     ) {
     }
 
     public function getXPathSelector(?string $context = null): string
     {
         $selectorString = '';
-        foreach ($this->classLogics as $logic) {
-            $selectorString .= '[' . $logic->getXPathSelector('class') . ']';
-        }
-        foreach ($this->attributeLogics as $logic) {
-            $selectorString .= '[' . $logic->getXPathSelector('attribute') . ']';
+        foreach ($this->attributes as $selector) {
+            $selectorString .= '[' . $selector->getXPathSelector() . ']';
         }
 
         return $this->tag . $selectorString;

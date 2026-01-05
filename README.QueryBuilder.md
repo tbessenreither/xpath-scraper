@@ -50,13 +50,13 @@ $builder = new QueryBuilder([
         ])
     ]),
     new LogicWrapper(LogicWrapper::OR, [
-        new QueryElement('div', [], [
+        new QueryElement('div', [
             new LogicWrapper(LogicWrapper::AND, [
                 new QueryAttribute('data-role', 'main', QueryAttribute::EXACT),
                 new QueryAttribute('data-active', 'true', QueryAttribute::EXACT),
             ])
         ]),
-        new QueryElement('span', [], [
+        new QueryElement('span', [
             new LogicWrapper(LogicWrapper::AND, [
                 new QueryAttribute('data-role', 'main', QueryAttribute::EXACT),
                 new QueryAttribute('data-active', 'true', QueryAttribute::EXACT),
@@ -66,8 +66,7 @@ $builder = new QueryBuilder([
     new QueryElement('a', [
         new LogicWrapper(LogicWrapper::AND, [
             new QueryClass('link', QueryClass::CONTAINS),
-        ])
-    ], [
+        ]),
         new LogicWrapper(LogicWrapper::OR, [
             new QueryAttribute('href', '/home', QueryAttribute::STARTS_WITH),
             new LogicWrapper(LogicWrapper::AND, [
@@ -131,7 +130,6 @@ use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryAttribute;
 $builder = new QueryBuilder([
     new QueryElement('a', [
         new QueryClass('link', QueryClass::CONTAINS),
-    ], [
         new QueryAttribute('href', '/home', QueryAttribute::STARTS_WITH),
     ]),
 ]);
@@ -156,6 +154,26 @@ $builder = new QueryBuilder([
 
 $xpath = $builder->getXPathSelector();
 // Result: //div[(contains(concat(' ', normalize-space(@class), ' '), ' outer ' ) or starts-with(normalize-space(@class), 'container-'))]
+```
+
+### Optional Tag Name (Match Any Tag)
+
+You can omit the tag name to match any element with the given attributes or logic:
+
+```php
+use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryElement;
+use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryClass;
+use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryAttribute;
+
+$builder = new QueryBuilder([
+    new QueryElement(attributes: [
+        new QueryClass('highlight', QueryClass::EXACT),
+        new QueryAttribute('data-id', '123', QueryAttribute::EXACT),
+    ]),
+]);
+
+$xpath = $builder->getXPathSelector();
+// Result: //*[(contains(concat(' ', normalize-space(@class), ' '), ' highlight ' ))][(@data-id='123')]
 ```
 
 ---

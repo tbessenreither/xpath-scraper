@@ -2,8 +2,11 @@
 
 namespace Tbessenreither\XPathScraper\Tests\QueryBuilder\Selector;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryAttribute;
+
+#[CoversClass(QueryAttribute::class)]
 
 
 class QueryAttributeTest extends TestCase

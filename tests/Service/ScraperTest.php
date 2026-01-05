@@ -2,22 +2,39 @@
 
 namespace Tbessenreither\XPathScraper\Tests\Service;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
-use Tbessenreither\XPathScraper\Service\Scraper;
-use Tbessenreither\XPathScraper\QueryBuilder\Service\QueryBuilder;
-use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryElement;
 use Tbessenreither\XPathScraper\QueryBuilder\Selector\LogicWrapper;
 use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryClass;
+use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryElement;
+use Tbessenreither\XPathScraper\QueryBuilder\Service\QueryBuilder;
+use Tbessenreither\XPathScraper\Service\Scraper;
+use Tbessenreither\XPathScraper\Dto\ExtractionDto;
+use Tbessenreither\XPathScraper\Dto\ExtractionsDto;
+
+#[CoversClass(Scraper::class)]
+#[UsesClass(QueryBuilder::class)]
+#[UsesClass(QueryElement::class)]
+#[UsesClass(LogicWrapper::class)]
+#[UsesClass(QueryClass::class)]
+#[UsesClass(ExtractionDto::class)]
+#[UsesClass(ExtractionsDto::class)]
 
 
 class ScraperTest extends TestCase
 {
+    protected string $html;
 
-    public function testExtractLinksFromFooter()
+    protected function setUp(): void
     {
-        $html = file_get_contents(__DIR__ . '/../fixtures/basic.html');
-        $this->assertNotFalse($html, 'Failed to load HTML fixture');
-        $scraper = new Scraper($html);
+        $this->html = file_get_contents(__DIR__ . '/../fixtures/basic.html');
+        $this->assertNotFalse($this->html, 'Failed to load HTML fixture');
+    }
+
+    public function testExtractLinksFromFooter(): void
+    {
+        $scraper = new Scraper($this->html);
         $mainContent = $scraper->get(new QueryBuilder([
             new QueryElement('div', [
                 new LogicWrapper(LogicWrapper::OR , [
@@ -47,11 +64,9 @@ class ScraperTest extends TestCase
         $this->assertEquals('About Us', $extractions[1]->getText());
     }
 
-    public function testExtractHtmlFromFooterLinks()
+    public function testExtractHtmlFromFooterLinks(): void
     {
-        $html = file_get_contents(__DIR__ . '/../fixtures/basic.html');
-        $this->assertNotFalse($html, 'Failed to load HTML fixture');
-        $scraper = new Scraper($html);
+        $scraper = new Scraper($this->html);
         $mainContent = $scraper->get(new QueryBuilder([
             new QueryElement('div', [
                 new LogicWrapper(LogicWrapper::OR , [
@@ -82,6 +97,45 @@ class ScraperTest extends TestCase
         $this->assertEquals('About Us', $extractions[1]->getHtml());
         $this->assertEquals('<a class="link" href="/about">About Us</a>', $extractions[1]->getOuterHtml());
         $this->assertNull($extractions[1]->getAttribute('data-foo'));
+    }
+
+    public function testFooterTitleNodeIsFound(): void
+    {
+        $scraper = new Scraper($this->html);
+        $result = $scraper->get(new QueryBuilder([
+            new QueryElement(attributes: [
+                new QueryClass('footer-title', QueryClass::EXACT),
+            ]),
+        ]));
+        $this->assertNotNull($result, 'footer-title node should be found by QueryBuilder');
+    }
+
+    public function testParentSelector(): void
+    {
+        $scraper = new Scraper($this->html);
+
+        $links = $scraper
+            ->get(new QueryBuilder([
+                new QueryElement(attributes: [
+                    new QueryClass('footer-title', QueryClass::EXACT),
+                ]),
+            ]))
+            ->parent(new QueryBuilder([
+                new QueryElement('div', [
+                    new QueryClass('outer', QueryClass::EXACT),
+                ]),
+            ]))
+            ->get(new QueryBuilder([
+                new QueryElement(attributes: [
+                    new QueryClass('link', QueryClass::EXACT),
+                ]),
+            ]));
+
+        $extractions = $links->extract([
+            Scraper::EXTRACT_ATTRIBUTE_PREFIX . 'href',
+            Scraper::EXTRACT_TEXT,
+        ]);
+        $this->assertCount(2, $extractions);
     }
 
 }

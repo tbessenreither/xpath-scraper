@@ -2,12 +2,20 @@
 
 namespace Tbessenreither\XPathScraper\Tests\QueryBuilder\Service;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
-use Tbessenreither\XPathScraper\QueryBuilder\Service\QueryBuilder;
-use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryElement;
 use Tbessenreither\XPathScraper\QueryBuilder\Selector\LogicWrapper;
-use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryClass;
 use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryAttribute;
+use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryClass;
+use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryElement;
+use Tbessenreither\XPathScraper\QueryBuilder\Service\QueryBuilder;
+
+#[CoversClass(QueryBuilder::class)]
+#[UsesClass(QueryElement::class)]
+#[UsesClass(LogicWrapper::class)]
+#[UsesClass(QueryClass::class)]
+#[UsesClass(QueryAttribute::class)]
 
 
 class QueryBuilderTest extends TestCase
@@ -23,13 +31,11 @@ class QueryBuilderTest extends TestCase
                         new QueryClass('outer', QueryClass::EXACT),
                         new QueryClass('container-', QueryClass::STARTS_WITH),
                     ])
-                ],
-                []
+                ]
             ),
             new LogicWrapper(LogicWrapper::OR , [
                 new QueryElement(
                     'div',
-                    [],
                     [
                         new LogicWrapper(LogicWrapper::AND , [
                             new QueryAttribute('data-role', 'main', QueryAttribute::EXACT),
@@ -39,7 +45,6 @@ class QueryBuilderTest extends TestCase
                 ),
                 new QueryElement(
                     'span',
-                    [],
                     [
                         new LogicWrapper(LogicWrapper::AND , [
                             new QueryAttribute('data-role', 'main', QueryAttribute::EXACT),
@@ -53,9 +58,7 @@ class QueryBuilderTest extends TestCase
                 [
                     new LogicWrapper(LogicWrapper::AND , [
                         new QueryClass('link', QueryClass::CONTAINS),
-                    ])
-                ],
-                [
+                    ]),
                     new LogicWrapper(LogicWrapper::OR , [
                         new QueryAttribute('href', '/home', QueryAttribute::STARTS_WITH),
                         new LogicWrapper(LogicWrapper::AND , [

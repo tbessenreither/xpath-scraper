@@ -2,10 +2,16 @@
 
 namespace Tbessenreither\XPathScraper\Tests\Dto;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use Tbessenreither\XPathScraper\Dto\ExtractionDto;
 use Tbessenreither\XPathScraper\Dto\ExtractionsDto;
 use Tbessenreither\XPathScraper\Service\Scraper;
+
+#[CoversClass(ExtractionsDto::class)]
+#[UsesClass(ExtractionDto::class)]
+#[UsesClass(Scraper::class)]
 
 
 class ExtractionsDtoTest extends TestCase

@@ -1,5 +1,3 @@
-
-
 # XPath Scraper & Query Builder Bundle
 
 A Symfony bundle for extracting data from HTML using expressive, composable XPath queries. This bundle provides a fluent API for building XPath selectors and scraping content, with a focus on testability and developer ergonomics.

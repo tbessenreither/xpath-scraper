@@ -2,8 +2,11 @@
 
 namespace Tbessenreither\XPathScraper\Tests\Dto;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Tbessenreither\XPathScraper\Dto\ExtractionDto;
+
+#[CoversClass(ExtractionDto::class)]
 
 
 class ExtractionDtoTest extends TestCase

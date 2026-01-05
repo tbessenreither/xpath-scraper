@@ -2,10 +2,16 @@
 
 namespace Tbessenreither\XPathScraper\Tests\QueryBuilder\Selector;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use Tbessenreither\XPathScraper\QueryBuilder\Selector\LogicWrapper;
-use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryClass;
 use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryAttribute;
+use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryClass;
+
+#[CoversClass(LogicWrapper::class)]
+#[UsesClass(QueryClass::class)]
+#[UsesClass(QueryAttribute::class)]
 
 
 class LogicWrapperTest extends TestCase

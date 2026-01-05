@@ -72,6 +72,35 @@ class Scraper
     }
 
     /**
+     * Returns a new Scraper instance for the parent nodes of the current nodes.
+     * If a QueryBuilder is provided, only parents matching the selector are included.
+     * @param QueryBuilder|null $query
+     * @return Scraper|null
+     */
+    public function parent(?QueryBuilder $query = null): ?Scraper
+    {
+        $parents = [];
+        foreach ($this->nodes as $node) {
+            $parent = $node->parentNode;
+            if ($parent instanceof DOMNode) {
+                $parents[] = $parent;
+            }
+        }
+        if (!$parents) {
+            return null;
+        }
+        $uniqueParents = [];
+        foreach ($parents as $p) {
+            $uniqueParents[spl_object_id($p)] = $p;
+        }
+        $scraper = new self(array_values($uniqueParents));
+        if ($query) {
+            return $scraper->get($query);
+        }
+        return $scraper;
+    }
+
+    /**
      * @param string[] $fields
      * @return array
      */
