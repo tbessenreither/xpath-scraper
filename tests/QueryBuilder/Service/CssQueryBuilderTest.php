@@ -7,10 +7,12 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
+use Tbessenreither\XPathScraper\Enum\PseudoclassOptions;
 use Tbessenreither\XPathScraper\QueryBuilder\Selector\LogicWrapper;
 use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryAttribute;
 use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryClass;
 use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryElement;
+use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryPseudoclass;
 use Tbessenreither\XPathScraper\QueryBuilder\Service\CssQueryBuilder;
 use Tbessenreither\XPathScraper\QueryBuilder\Service\QueryBuilder;
 
@@ -20,6 +22,7 @@ use Tbessenreither\XPathScraper\QueryBuilder\Service\QueryBuilder;
 #[UsesClass(LogicWrapper::class)]
 #[UsesClass(QueryClass::class)]
 #[UsesClass(QueryAttribute::class)]
+#[UsesClass(QueryPseudoclass::class)]
 
 
 class CssQueryBuilderTest extends TestCase
@@ -260,6 +263,27 @@ class CssQueryBuilderTest extends TestCase
                 new QueryElement(
                     tag: 'span',
                     isDirectChild: true,
+                ),
+            ]))->getXPathSelector(),
+        ];
+
+        yield [
+            'ul li:nth-child(3) a.link',
+            (new QueryBuilder([
+                new QueryElement(
+                    tag: 'ul',
+                ),
+                new QueryElement(
+                    tag: 'li',
+                    attributes: [
+                        new QueryPseudoclass(PseudoclassOptions::NTH_CHILD, '3'),
+                    ],
+                ),
+                new QueryElement(
+                    tag: 'a',
+                    attributes: [
+                        new QueryClass('link', QueryClass::EXACT),
+                    ],
                 ),
             ]))->getXPathSelector(),
         ];

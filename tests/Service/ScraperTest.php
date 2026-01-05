@@ -12,6 +12,8 @@ use Tbessenreither\XPathScraper\QueryBuilder\Service\QueryBuilder;
 use Tbessenreither\XPathScraper\Service\Scraper;
 use Tbessenreither\XPathScraper\Dto\ExtractionDto;
 use Tbessenreither\XPathScraper\Dto\ExtractionsDto;
+use Tbessenreither\XPathScraper\Enum\PseudoclassOptions;
+use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryPseudoclass;
 use Tbessenreither\XPathScraper\QueryBuilder\Service\CssQueryBuilder;
 
 #[CoversClass(Scraper::class)]
@@ -22,6 +24,7 @@ use Tbessenreither\XPathScraper\QueryBuilder\Service\CssQueryBuilder;
 #[UsesClass(ExtractionDto::class)]
 #[UsesClass(ExtractionsDto::class)]
 #[UsesClass(CssQueryBuilder::class)]
+#[UsesClass(QueryPseudoclass::class)]
 
 
 class ScraperTest extends TestCase
@@ -200,6 +203,64 @@ class ScraperTest extends TestCase
             ),
         ]));
         $this->assertEquals(0, $result->nodeCount(), 'No node should be found by QueryBuilder with direct child selector in this case');
+    }
+
+    public function testNthChildSelector(): void
+    {
+        $scraper = new Scraper($this->html);
+        $result = $scraper->get(new QueryBuilder([
+            new QueryElement(
+                tag: 'div',
+                attributes: [
+                    new QueryClass('outer', QueryClass::EXACT),
+                ],
+            ),
+            new QueryElement(
+                tag: 'div',
+                attributes: [
+                    new QueryClass('footer', QueryClass::EXACT),
+                ],
+            ),
+            new QueryElement(
+                tag: 'a',
+                attributes: [
+                    new QueryPseudoclass(PseudoclassOptions::NTH_CHILD, '1'),
+                ],
+            ),
+        ]));
+        $extractions = $result->extract([
+            Scraper::EXTRACT_TEXT,
+        ]);
+        $this->assertCount(1, $extractions, 'One node should be found by QueryBuilder with nth-child selector');
+        $this->assertEquals('Home', $extractions[0]->getText(), 'The first link should be "Home"');
+
+        $scraper = new Scraper($this->html);
+        $result = $scraper->get(new QueryBuilder([
+            new QueryElement(
+                tag: 'div',
+                attributes: [
+                    new QueryClass('outer', QueryClass::EXACT),
+                ],
+            ),
+            new QueryElement(
+                tag: 'div',
+                attributes: [
+                    new QueryClass('footer', QueryClass::EXACT),
+                ],
+            ),
+            new QueryElement(
+                tag: 'a',
+                attributes: [
+                    new QueryPseudoclass(PseudoclassOptions::NTH_CHILD, '3'),
+                ],
+            ),
+        ]));
+        $extractions = $result->extract([
+            Scraper::EXTRACT_TEXT,
+        ]);
+        $this->assertCount(1, $extractions, 'One node should be found by QueryBuilder with nth-child selector in this case');
+        $this->assertEquals('About Others', $extractions[0]->getText(), 'The third link should be "About Others"');
+
     }
 
 }

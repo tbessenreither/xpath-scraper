@@ -4,11 +4,13 @@ declare(strict_types=1);
 namespace Tbessenreither\XPathScraper\QueryBuilder\Service;
 
 use InvalidArgumentException;
+use Tbessenreither\XPathScraper\Enum\PseudoclassOptions;
 use Tbessenreither\XPathScraper\QueryBuilder\Interface\SelectorInterface;
 use Tbessenreither\XPathScraper\QueryBuilder\Selector\LogicWrapper;
 use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryElement;
 use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryClass;
 use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryAttribute;
+use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryPseudoclass;
 use Tbessenreither\XPathScraper\QueryBuilder\Service\QueryBuilder;
 
 
@@ -27,7 +29,7 @@ class CssQueryBuilder extends QueryBuilder
 	private function parseCssToQueryElements(string $css): array
 	{
 		$queryElements = [];
-		$regexTag = '/(?P<outerElement>(?P<tag>[\w\*]*)(?P<classes>(?:\.[\^~$]?[\w\-]+)+)?(?P<attributes>(?:\[[^\]\[]+\])*))(?P<combinator>(?:\s+[>]\s+|,))?/';
+		$regexTag = '/(?P<outerElement>(?P<tag>[\w\*]*)(?P<classes>(?:\.[\^~$]?[\w\-]+)+)?(?P<attributes>(?:\[[^\]\[]+\])*)(?P<pseudoclasses>(?::[\w\-\(\)]+)+)?)(?P<combinator>(?:\s+[>]\s+|,))?/';
 
 
 		$elementMatches = [];
@@ -118,14 +120,19 @@ class CssQueryBuilder extends QueryBuilder
 		if (!isset($match['attributes'])) {
 			$match['attributes'] = null;
 		}
-		$match['classes'] = $this->parseClasses($match['classes']);
-		$match['attributes'] = $this->parseAttributes($match['attributes']);
+		if (!isset($match['pseudoclasses'])) {
+			$match['pseudoclasses'] = null;
+		}
+		$match['classes'] = self::parseClasses($match['classes']);
+		$match['attributes'] = self::parseAttributes($match['attributes']);
+		$match['pseudoclasses'] = self::parsePseudoClasses($match['pseudoclasses']);
 
 		return new QueryElement(
 			tag: $match['tag'] ?? '*',
 			attributes: array_filter([
 				$match['classes'],
 				$match['attributes'],
+				$match['pseudoclasses'],
 			]),
 			isDirectChild: $this->combinatorStarted === '>'
 		);
@@ -136,7 +143,7 @@ class CssQueryBuilder extends QueryBuilder
 		}
 	}
 
-	private function parseClasses(?string $classString): ?SelectorInterface
+	private static function parseClasses(?string $classString): ?SelectorInterface
 	{
 		if ($classString === null) {
 			return null;
@@ -165,7 +172,7 @@ class CssQueryBuilder extends QueryBuilder
 		return new LogicWrapper(LogicWrapper::AND , $classes);
 	}
 
-	private function parseAttributes(?string $attributeString): ?SelectorInterface
+	private static function parseAttributes(?string $attributeString): ?SelectorInterface
 	{
 		if ($attributeString === null) {
 			return null;
@@ -201,6 +208,30 @@ class CssQueryBuilder extends QueryBuilder
 			return $attributes[0];
 		}
 		return new LogicWrapper(LogicWrapper::AND , $attributes);
+	}
+
+	private static function parsePseudoClasses(?string $pseudoClassString): ?SelectorInterface
+	{
+		if ($pseudoClassString === null) {
+			return null;
+		}
+
+		$pseudoclassElements = explode(':', ltrim((string) $pseudoClassString, ':'));
+
+		$pseudoclasses = [];
+		foreach ($pseudoclassElements as $pseudoclassElement) {
+			if (strpos($pseudoclassElement, 'nth-child(') === 0) {
+				$insideBrackets = substr($pseudoclassElement, strlen('nth-child('), -1);
+				$nthChild = (int) $insideBrackets;
+				$pseudoclasses[] = new QueryPseudoclass(PseudoclassOptions::NTH_CHILD, (string) $nthChild);
+			}
+		}
+
+		if (count($pseudoclasses) === 1) {
+			return $pseudoclasses[0];
+		}
+
+		return new LogicWrapper(LogicWrapper::AND , $pseudoclasses);
 	}
 
 }
