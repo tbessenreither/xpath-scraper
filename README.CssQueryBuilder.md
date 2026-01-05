@@ -1,17 +1,20 @@
+
 # CSS Query Builder
 
 The CSS Query Builder allows you to construct XPath queries using familiar CSS selector syntax. It parses CSS selectors and builds the corresponding QueryBuilder tree, making it easier to write complex queries for scraping or DOM traversal.
 
-> **Note:** Direct child combinator (`>`) support is not yet implemented. Only descendant (space) combinators are currently supported.
->
-> **Note:** Class selectors support the following prefixes:
-> - `.class` (exact match)
-> - `.^class` (starts with)
-> - `.$class` (ends with)
-> - `.~class` (contains)
+## New Features
+
+- **Direct child combinator (`>`) is now supported.**
+- **Pseudoclass support:** Use `:nth-child(N)` to select elements by position.
+- Class selectors support the following prefixes:
+	- `.class` (exact match)
+	- `.^class` (starts with)
+	- `.$class` (ends with)
+	- `.~class` (contains)
 
 ## Features
-- Supports tag, class, and attribute selectors
+- Supports tag, class, attribute, and pseudoclass selectors
 - Handles descendant and child combinators
 - Converts CSS selectors to QueryBuilder objects and XPath
 
@@ -94,8 +97,17 @@ $builder = new CssQueryBuilder('a[href="test"][target="_blank"]');
 ```php
 $builder = new CssQueryBuilder('ul > li');
 // QueryBuilder tree:
-// [ new QueryElement('ul'), new QueryElement('li') ]
+// [ new QueryElement('ul'), new QueryElement('li', isDirectChild: true) ]
 // (interpreted as direct child in XPath)
+```
+
+### 11. Pseudoclass Selector
+**CSS:** `li:nth-child(2)`
+```php
+$builder = new CssQueryBuilder('li:nth-child(2)');
+// QueryBuilder tree:
+// [ new QueryElement('li', nthChild: 2) ]
+// XPath: //li[position()=2]
 ```
 
 ### 8. Grouping (Comma)

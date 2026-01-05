@@ -99,7 +99,8 @@ A powerful, composable PHP query builder for generating complex XPath selectors.
 ## Features
 
 - Fluent, object-oriented API for building XPath queries
-- Supports logical wrappers (AND/OR), class and attribute selectors
+- Supports logical wrappers (AND/OR), class, attribute, and pseudoclass selectors
+- Direct child combinator (`isDirectChild`) for precise structure
 - Type-safe and IDE-friendly
 - Easily extendable for custom selector logic
 
@@ -156,6 +157,19 @@ $xpath = $builder->getXPathSelector();
 // Result: //div[(contains(concat(' ', normalize-space(@class), ' '), ' outer ' ) or starts-with(normalize-space(@class), 'container-'))]
 ```
 
+### Pseudoclass Selectors (e.g. nth-child)
+
+```php
+use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryElement;
+
+$builder = new QueryBuilder([
+    new QueryElement('li', nthChild: 2),
+]);
+
+$xpath = $builder->getXPathSelector();
+// Result: //li[position()=2]
+```
+
 ### Optional Tag Name (Match Any Tag)
 
 You can omit the tag name to match any element with the given attributes or logic:
@@ -185,6 +199,10 @@ $xpath = $builder->getXPathSelector();
 - `QueryClass` — Class selector (exact, starts_with, ends_with, contains)
 - `QueryAttribute` — Attribute selector (exact, starts_with, ends_with, contains)
 - `LogicWrapper` — Logical AND/OR grouping for selectors
+- `QueryPseudoclass` — Pseudoclass selector (e.g. nth-child)
+- `PseudoclassOptions` (enum) — Available pseudoclasses:
+    - `POSITION` (for `:nth-child`)
+    - (extendable for other pseudoclasses)
 
 ---
 

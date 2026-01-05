@@ -11,6 +11,8 @@ A Symfony bundle for extracting data from HTML using expressive, composable XPat
 - Chain queries to traverse and filter DOM nodes
 - Designed for integration with Symfony and modern PHP
 - **NEW:** Use CSS selectors directly with the [CSS Query Builder](README.CssQueryBuilder.md)
+	- Direct child combinator (`>`) now supported
+	- Pseudoclass selectors like `:nth-child(N)` now supported
 
 ---
 
@@ -110,7 +112,7 @@ $xpath = $builder->getXPathSelector();
 // $xpath now contains the XPath for div.outer
 ```
 
-See [README.CssQueryBuilder.md](README.CssQueryBuilder.md) for more details and advanced usage.
+See [README.CssQueryBuilder.md](README.CssQueryBuilder.md) for more details and advanced usage, including direct child and pseudoclass selectors.
 
 ## Requirements
 
