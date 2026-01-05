@@ -6,7 +6,7 @@ use DOMDocument;
 use DOMXPath;
 use DOMNode;
 use DOMNodeList;
-
+use InvalidArgumentException;
 use Tbessenreither\XPathScraper\QueryBuilder\Service\QueryBuilder;
 use Tbessenreither\XPathScraper\Dto\ExtractionDto;
 use Tbessenreither\XPathScraper\Dto\ExtractionsDto;
@@ -41,15 +41,19 @@ class Scraper
             $this->dom = $input[0]->ownerDocument;
             $this->xpath = new DOMXPath($this->dom);
             $this->nodes = $input;
+        } elseif (is_array($input) && count($input) === 0) {
+            $this->dom = new DOMDocument();
+            $this->xpath = new DOMXPath($this->dom);
+            $this->nodes = [];
         } else {
-            throw new \InvalidArgumentException('Invalid input for XPathScraper');
+            throw new InvalidArgumentException('Invalid input for XPathScraper');
         }
     }
 
     /**
      * @return Scraper|null
      */
-    public function get(QueryBuilder $query): ?Scraper
+    public function get(QueryBuilder $query): Scraper
     {
         $selector = $query->getXPathSelector();
         $results = [];
@@ -64,7 +68,7 @@ class Scraper
             }
         }
         if (count($results) === 0) {
-            return null;
+            return new self([]); // Return empty Scraper instance
         }
 
         // Only unique nodes are passed to the next Scraper
@@ -127,6 +131,11 @@ class Scraper
             $output[] = new ExtractionDto($text, $html, $outerHtml, $attributes);
         }
         return new ExtractionsDto($output);
+    }
+
+    public function nodeCount(): int
+    {
+        return count($this->nodes);
     }
 
     private function getInnerHtml(DOMNode $node): string

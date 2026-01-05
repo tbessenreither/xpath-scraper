@@ -109,7 +109,7 @@ class ScraperTest extends TestCase
                 new QueryClass('footer-title', QueryClass::EXACT),
             ]),
         ]));
-        $this->assertNotNull($result, 'footer-title node should be found by QueryBuilder');
+        $this->assertGreaterThan(0, $result->nodeCount(), 'footer-title node should be found by QueryBuilder');
     }
 
     public function testParentSelector(): void
@@ -146,7 +146,7 @@ class ScraperTest extends TestCase
         $cssQuery = 'div.outer,div.^container- div.footer a.link';
         $queryBuilder = new CssQueryBuilder($cssQuery);
         $result = $scraper->get($queryBuilder);
-        $this->assertNotNull($result, 'Node should be found by LogicWrapper with one valid branch');
+        $this->assertGreaterThan(0, $result->nodeCount(), 'Node should be found by CssQueryBuilder with LogicWrapper edge case');
 
         $extractions = $result->extract([
             Scraper::EXTRACT_ATTRIBUTE_PREFIX . 'href',
@@ -160,6 +160,46 @@ class ScraperTest extends TestCase
         $this->assertEquals('/about', $extractions[1]->getAttribute('href'));
         ;
         $this->assertEquals('About Us', $extractions[1]->getText());
+    }
+
+    public function testDirectChildSelector(): void
+    {
+        $scraper = new Scraper($this->html);
+        $result = $scraper->get(new QueryBuilder([
+            new QueryElement(
+                tag: 'div',
+                attributes: [
+                    new QueryClass('outer', QueryClass::EXACT),
+                ],
+            ),
+            new QueryElement(
+                tag: 'div',
+                attributes: [
+                    new QueryClass('footer', QueryClass::EXACT),
+                ],
+                isDirectChild: true,
+            ),
+        ]));
+        $this->assertGreaterThan(0, $result->nodeCount(), 'Node should be found by QueryBuilder with direct child selector');
+
+
+        $scraper = new Scraper($this->html);
+        $result = $scraper->get(new QueryBuilder([
+            new QueryElement(
+                tag: 'div',
+                attributes: [
+                    new QueryClass('outer', QueryClass::EXACT),
+                ],
+            ),
+            new QueryElement(
+                tag: 'a',
+                attributes: [
+                    new QueryClass('link', QueryClass::EXACT),
+                ],
+                isDirectChild: true,
+            ),
+        ]));
+        $this->assertEquals(0, $result->nodeCount(), 'No node should be found by QueryBuilder with direct child selector in this case');
     }
 
 }

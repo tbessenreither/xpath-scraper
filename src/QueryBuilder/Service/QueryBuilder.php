@@ -4,6 +4,7 @@ namespace Tbessenreither\XPathScraper\QueryBuilder\Service;
 
 use Tbessenreither\XPathScraper\QueryBuilder\Interface\SelectorInterface;
 use Tbessenreither\XPathScraper\QueryBuilder\Selector\LogicWrapper;
+use Tbessenreither\XPathScraper\QueryBuilder\Selector\QueryElement;
 
 
 class QueryBuilder
@@ -34,14 +35,36 @@ class QueryBuilder
 
             return implode(' | ', $paths);
         }
-        // Remove leading '//' from each element except the first
-        $selectors = array_map(fn($el) => ltrim($el->getXPathSelector(), '/'), $this->elements);
-        // Add leading '//' to the first element only
-        if (!empty($selectors)) {
-            $selectors[0] = '//' . ltrim($selectors[0], '/');
+        // Build XPath with respect to isDirectChild
+        $selectors = [];
+        foreach ($this->elements as $i => $el) {
+            $xpath = ltrim($el->getXPathSelector(), '/');
+            if ($i === 0) {
+                $selectors[] = '//' . $xpath;
+            } else {
+                // Only use '/' if current is QueryElement, isDirectChild is true, and previous is also QueryElement
+                $prev = $this->elements[$i - 1];
+                if (
+                    $el instanceof QueryElement &&
+                    $el->isDirectChild() &&
+                    $prev instanceof QueryElement
+                ) {
+                    $selectors[] = '/' . $xpath;
+                } else {
+                    $selectors[] = '//' . $xpath;
+                }
+            }
         }
-
-        return implode('/', $selectors);
+            // Join selectors, always add / between them except for the first
+        $xpath = array_shift($selectors);
+        foreach ($selectors as $sel) {
+            if (str_starts_with($sel, '/')) {
+                $xpath .= $sel;
+            } else {
+                    $xpath .= $sel;
+            }
+        }
+        return $xpath;
     }
 
 }

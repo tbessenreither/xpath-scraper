@@ -15,6 +15,7 @@ class QueryElement implements SelectorInterface
     public function __construct(
         private string $tag = '*',
         private array $attributes = [],
+        private bool $isDirectChild = false,
     ) {
     }
 
@@ -26,6 +27,11 @@ class QueryElement implements SelectorInterface
         }
 
         return $this->tag . $selectorString;
+    }
+
+    public function isDirectChild(): bool
+    {
+        return $this->isDirectChild;
     }
 
 }
