@@ -35,6 +35,16 @@ class LogicWrapper implements SelectorInterface
         return '(' . $expr . ')';
     }
 
+    public function isElementLevelOr(): bool
+    {
+        return $this->type === self::OR && $this->allChildrenAreElements();
+    }
+
+    public function getChildren(): array
+    {
+        return $this->children;
+    }
+
     private function allChildrenAreElements(): bool
     {
         foreach ($this->children as $child) {

@@ -143,8 +143,23 @@ class ScraperTest extends TestCase
     public function testLogicWrapperEdgeCase(): void
     {
         $scraper = new Scraper($this->html);
-        $result = $scraper->get(new CssQueryBuilder('div.outer,div.^container- div.footer a.link'));
+        $cssQuery = 'div.outer,div.^container- div.footer a.link';
+        $queryBuilder = new CssQueryBuilder($cssQuery);
+        $result = $scraper->get($queryBuilder);
         $this->assertNotNull($result, 'Node should be found by LogicWrapper with one valid branch');
+
+        $extractions = $result->extract([
+            Scraper::EXTRACT_ATTRIBUTE_PREFIX . 'href',
+            Scraper::EXTRACT_TEXT,
+        ]);
+
+        $this->assertCount(2, $extractions);
+        $this->assertEquals('/home', $extractions[0]->getAttribute('href'));
+        ;
+        $this->assertEquals('Home', $extractions[0]->getText());
+        $this->assertEquals('/about', $extractions[1]->getAttribute('href'));
+        ;
+        $this->assertEquals('About Us', $extractions[1]->getText());
     }
 
 }
