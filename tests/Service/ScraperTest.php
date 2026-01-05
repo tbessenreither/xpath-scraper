@@ -40,7 +40,7 @@ class ScraperTest extends TestCase
             Scraper::EXTRACT_ATTRIBUTE_PREFIX . 'href',
             Scraper::EXTRACT_TEXT,
         ]);
-        $this->assertCount(2, $extractions);
+        $this->assertCount(3, $extractions);
         $this->assertEquals('/home', $extractions[0]->getAttribute('href'));
         $this->assertEquals('Home', $extractions[0]->getText());
         $this->assertEquals('/about', $extractions[1]->getAttribute('href'));
@@ -75,7 +75,7 @@ class ScraperTest extends TestCase
             Scraper::EXTRACT_OUTER_HTML,
             Scraper::EXTRACT_ATTRIBUTE_PREFIX . 'data-foo',
         ]);
-        $this->assertCount(2, $extractions);
+        $this->assertCount(3, $extractions);
         $this->assertEquals('Home', $extractions[0]->getHtml());
         $this->assertEquals('<a class="link" href="/home">Home</a>', $extractions[0]->getOuterHtml());
         $this->assertNull($extractions[0]->getAttribute('data-foo'));

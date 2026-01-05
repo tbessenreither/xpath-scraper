@@ -58,7 +58,8 @@ class Scraper
             $nodeList = $xpath->query($selector, $node);
             if ($nodeList) {
                 foreach ($nodeList as $found) {
-                    $results[] = $found;
+                    $oid = spl_object_id($found);
+                    $results[$oid] = $found;
                 }
             }
         }
@@ -66,7 +67,8 @@ class Scraper
             return null;
         }
 
-        return new self($results);
+        // Only unique nodes are passed to the next Scraper
+        return new self(array_values($results));
     }
 
     /**
@@ -80,7 +82,7 @@ class Scraper
             $text = null;
             $html = null;
             $outerHtml = null;
-            $attributes = []; // Initialize attributes here
+            $attributes = [];
             foreach ($fields as $field) {
                 if ($field === self::EXTRACT_TEXT) {
                     $text = $node->textContent;
