@@ -15,13 +15,16 @@ use Tbessenreither\XPathScraper\QueryBuilder\Service\QueryBuilder;
 class CssQueryBuilder extends QueryBuilder
 {
 
+	private ?string $combinatorStarted = null;
+	private array $combinatorStorage = [];
+
 	public function __construct(string $cssQuery)
 	{
-		$queryBuilderElements = self::parseCssToQueryElements($cssQuery);
+		$queryBuilderElements = $this->parseCssToQueryElements($cssQuery);
 		parent::__construct($queryBuilderElements);
 	}
 
-	private static function parseCssToQueryElements(string $css): array
+	private function parseCssToQueryElements(string $css): array
 	{
 		$queryElements = [];
 		$regexTag = '/(?P<outerElement>(?P<tag>[\w\*]*)(?P<classes>(?:\.[\^~$]?[\w\-]+)+)?(?P<attributes>(?:\[[^\]\[]+\])*))(?P<combinator>(?:\s+[>]\s+|,))?/';
@@ -29,41 +32,45 @@ class CssQueryBuilder extends QueryBuilder
 
 		$elementMatches = [];
 		preg_match_all($regexTag, $css, $elementMatches, PREG_SET_ORDER + PREG_UNMATCHED_AS_NULL);
-		self::cleanupMatches($elementMatches);
+		$this->cleanupMatches($elementMatches);
 
-		$combinatorStarted = null;
-		$combinatorStorage = [];
+		$this->combinatorStarted = null;
+		$this->combinatorStorage = [];
 		foreach ($elementMatches as $key => &$match) {
 			if (empty($match['outerElement'])) {
 				unset($elementMatches[$key]);
 				continue;
 			}
 
-			$queryElement = self::parseMatch($match);
+			$queryElement = $this->parseMatch($match);
 
 			if (
 				(
-					$combinatorStarted === null
-					|| $combinatorStarted === 'or'
+					$this->combinatorStarted === null
+					|| $this->combinatorStarted === 'or'
 				) &&
 				$match['combinator'] === ','
 			) {
-				if ($combinatorStarted === null) {
-					$combinatorStarted = 'or';
-					$combinatorStorage = [];
+				if ($this->combinatorStarted === null) {
+					$this->combinatorStarted = 'or';
+					$this->combinatorStorage = [];
 				}
-				$combinatorStorage[] = $queryElement;
+				$this->combinatorStorage[] = $queryElement;
 				continue;
 			}
 
-			if ($combinatorStarted === 'or' && $match['combinator'] !== ',') {
+			if ($this->combinatorStarted === 'or' && $match['combinator'] !== ',') {
 				//close OR wrapper
-				$combinatorStorage[] = $queryElement;
-				$queryElements[] = new LogicWrapper(LogicWrapper::OR , $combinatorStorage);
-				$combinatorStorage = [];
-				$combinatorStarted = null;
+				$this->combinatorStorage[] = $queryElement;
+				$queryElements[] = new LogicWrapper(LogicWrapper::OR , $this->combinatorStorage);
+				$this->combinatorStorage = [];
+				$this->combinatorStarted = null;
 			} else {
 				$queryElements[] = $queryElement;
+			}
+
+			if ($match['combinator'] === '>') {
+				$this->combinatorStarted = '>';
 			}
 		}
 		unset($match);
@@ -78,7 +85,7 @@ class CssQueryBuilder extends QueryBuilder
 		return $queryElements;
 	}
 
-	private static function cleanupMatches(array &$matches): void
+	private function cleanupMatches(array &$matches): void
 	{
 		foreach ($matches as $key => &$match) {
 			if (empty($match['outerElement'])) {
@@ -103,7 +110,7 @@ class CssQueryBuilder extends QueryBuilder
 		$matches = array_values($matches);
 	}
 
-	private static function parseMatch(array &$match): QueryElement
+	private function parseMatch(array &$match): QueryElement
 	{
 		if (!isset($match['classes'])) {
 			$match['classes'] = null;
@@ -111,20 +118,25 @@ class CssQueryBuilder extends QueryBuilder
 		if (!isset($match['attributes'])) {
 			$match['attributes'] = null;
 		}
-		$match['classes'] = self::parseClasses($match['classes']);
-		$match['attributes'] = self::parseAttributes($match['attributes']);
-
+		$match['classes'] = $this->parseClasses($match['classes']);
+		$match['attributes'] = $this->parseAttributes($match['attributes']);
 
 		return new QueryElement(
-			$match['tag'] ?? '*',
-			array_filter([
+			tag: $match['tag'] ?? '*',
+			attributes: array_filter([
 				$match['classes'],
 				$match['attributes'],
 			]),
+			isDirectChild: $this->combinatorStarted === '>'
 		);
+
+		// Reset combinator after use
+		if ($this->combinatorStarted === '>') {
+			$this->combinatorStarted = null;
+		}
 	}
 
-	private static function parseClasses(?string $classString): ?SelectorInterface
+	private function parseClasses(?string $classString): ?SelectorInterface
 	{
 		if ($classString === null) {
 			return null;
@@ -153,7 +165,7 @@ class CssQueryBuilder extends QueryBuilder
 		return new LogicWrapper(LogicWrapper::AND , $classes);
 	}
 
-	private static function parseAttributes(?string $attributeString): ?SelectorInterface
+	private function parseAttributes(?string $attributeString): ?SelectorInterface
 	{
 		if ($attributeString === null) {
 			return null;

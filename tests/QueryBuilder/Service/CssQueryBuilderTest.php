@@ -46,7 +46,7 @@ class CssQueryBuilderTest extends TestCase
         ];
 
         yield [
-            'div > a',
+            'div a',
             (new QueryBuilder([
                 new QueryElement(
                     'div'
@@ -82,8 +82,8 @@ class CssQueryBuilderTest extends TestCase
         ];
 
         $query1Variations = [
-            'div.outer, div.^container- > (div[data-role="main"][data-active="true"], span[data-role="main"][data-active="true"]) > a.link[href^="/home"], a.link[href^="/about"][href$="/us"]',
-            'div.outer,div.^container- > (div[data-role="main"][data-active="true"],span[data-role="main"][data-active="true"]) > a.link[href^="/home"],a.link[href^="/about"][href$="/us"]',
+            'div.outer, div.^container- (div[data-role="main"][data-active="true"], span[data-role="main"][data-active="true"]) a.link[href^="/home"], a.link[href^="/about"][href$="/us"]',
+            'div.outer,div.^container- (div[data-role="main"][data-active="true"],span[data-role="main"][data-active="true"]) a.link[href^="/home"],a.link[href^="/about"][href$="/us"]',
         ];
 
         foreach ($query1Variations as $query) {
@@ -203,6 +203,63 @@ class CssQueryBuilderTest extends TestCase
                     [
                         new QueryClass('link', QueryClass::EXACT),
                     ]
+                ),
+            ]))->getXPathSelector(),
+        ];
+
+        yield [
+            'div > div > a',
+            (new QueryBuilder([
+                new QueryElement(
+                    tag: 'div',
+                ),
+                new QueryElement(
+                    tag: 'div',
+                    isDirectChild: true,
+                ),
+                new QueryElement(
+                    tag: 'a',
+                    isDirectChild: true,
+                ),
+            ]))->getXPathSelector(),
+        ];
+
+        yield [
+            'div > div > a > span',
+            (new QueryBuilder([
+                new QueryElement(
+                    tag: 'div',
+                ),
+                new QueryElement(
+                    tag: 'div',
+                    isDirectChild: true,
+                ),
+                new QueryElement(
+                    tag: 'a',
+                    isDirectChild: true,
+                ),
+                new QueryElement(
+                    tag: 'span',
+                    isDirectChild: true,
+                ),
+            ]))->getXPathSelector(),
+        ];
+
+        yield [
+            'div div a > span',
+            (new QueryBuilder([
+                new QueryElement(
+                    tag: 'div',
+                ),
+                new QueryElement(
+                    tag: 'div',
+                ),
+                new QueryElement(
+                    tag: 'a',
+                ),
+                new QueryElement(
+                    tag: 'span',
+                    isDirectChild: true,
                 ),
             ]))->getXPathSelector(),
         ];
