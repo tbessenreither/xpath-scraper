@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1767612084">
-  <project timestamp="1767612084" name="Clover Coverage">
+<coverage generated="1767624476">
+  <project timestamp="1767624476" name="Clover Coverage">
     <package name="Tbessenreither\XPathScraper\Bundle">
       <file name="/var/www/html/src/Bundle/XPathScraperBundle.php">
         <class name="Tbessenreither\XPathScraper\Bundle\XPathScraperBundle" namespace="Tbessenreither\XPathScraper\Bundle">
@@ -126,17 +126,133 @@
       </file>
     </package>
     <package name="Tbessenreither\XPathScraper\QueryBuilder\Service">
+      <file name="/var/www/html/src/QueryBuilder/Service/CssQueryBuilder.php">
+        <class name="Tbessenreither\XPathScraper\QueryBuilder\Service\CssQueryBuilder" namespace="Tbessenreither\XPathScraper\QueryBuilder\Service">
+          <metrics complexity="38" methods="6" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="104" coveredstatements="94" elements="110" coveredelements="97"/>
+        </class>
+        <line num="18" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="7"/>
+        <line num="20" type="stmt" count="7"/>
+        <line num="21" type="stmt" count="7"/>
+        <line num="24" type="method" name="parseCssToQueryElements" visibility="private" complexity="10" crap="10.09" count="7"/>
+        <line num="26" type="stmt" count="7"/>
+        <line num="27" type="stmt" count="7"/>
+        <line num="30" type="stmt" count="7"/>
+        <line num="31" type="stmt" count="7"/>
+        <line num="32" type="stmt" count="7"/>
+        <line num="34" type="stmt" count="7"/>
+        <line num="35" type="stmt" count="7"/>
+        <line num="36" type="stmt" count="7"/>
+        <line num="37" type="stmt" count="7"/>
+        <line num="38" type="stmt" count="0"/>
+        <line num="39" type="stmt" count="0"/>
+        <line num="42" type="stmt" count="7"/>
+        <line num="46" type="stmt" count="7"/>
+        <line num="47" type="stmt" count="7"/>
+        <line num="49" type="stmt" count="7"/>
+        <line num="51" type="stmt" count="3"/>
+        <line num="52" type="stmt" count="3"/>
+        <line num="53" type="stmt" count="3"/>
+        <line num="55" type="stmt" count="3"/>
+        <line num="56" type="stmt" count="3"/>
+        <line num="59" type="stmt" count="7"/>
+        <line num="61" type="stmt" count="3"/>
+        <line num="62" type="stmt" count="3"/>
+        <line num="63" type="stmt" count="3"/>
+        <line num="64" type="stmt" count="3"/>
+        <line num="66" type="stmt" count="4"/>
+        <line num="69" type="stmt" count="7"/>
+        <line num="72" type="stmt" count="7"/>
+        <line num="74" type="stmt" count="7"/>
+        <line num="75" type="stmt" count="0"/>
+        <line num="78" type="stmt" count="7"/>
+        <line num="81" type="method" name="cleanupMatches" visibility="private" complexity="8" crap="8" count="7"/>
+        <line num="83" type="stmt" count="7"/>
+        <line num="84" type="stmt" count="7"/>
+        <line num="85" type="stmt" count="7"/>
+        <line num="86" type="stmt" count="7"/>
+        <line num="88" type="stmt" count="7"/>
+        <line num="89" type="stmt" count="7"/>
+        <line num="90" type="stmt" count="7"/>
+        <line num="92" type="stmt" count="7"/>
+        <line num="93" type="stmt" count="5"/>
+        <line num="96" type="stmt" count="7"/>
+        <line num="97" type="stmt" count="4"/>
+        <line num="99" type="stmt" count="7"/>
+        <line num="101" type="stmt" count="7"/>
+        <line num="103" type="stmt" count="7"/>
+        <line num="106" type="method" name="parseMatch" visibility="private" complexity="3" crap="3" count="7"/>
+        <line num="108" type="stmt" count="7"/>
+        <line num="109" type="stmt" count="5"/>
+        <line num="111" type="stmt" count="7"/>
+        <line num="112" type="stmt" count="5"/>
+        <line num="114" type="stmt" count="7"/>
+        <line num="115" type="stmt" count="7"/>
+        <line num="118" type="stmt" count="7"/>
+        <line num="119" type="stmt" count="7"/>
+        <line num="120" type="stmt" count="7"/>
+        <line num="121" type="stmt" count="7"/>
+        <line num="122" type="stmt" count="7"/>
+        <line num="123" type="stmt" count="7"/>
+        <line num="124" type="stmt" count="7"/>
+        <line num="127" type="method" name="parseClasses" visibility="private" complexity="7" crap="8.05" count="7"/>
+        <line num="129" type="stmt" count="7"/>
+        <line num="130" type="stmt" count="5"/>
+        <line num="133" type="stmt" count="4"/>
+        <line num="134" type="stmt" count="4"/>
+        <line num="135" type="stmt" count="4"/>
+        <line num="136" type="stmt" count="4"/>
+        <line num="137" type="stmt" count="2"/>
+        <line num="138" type="stmt" count="2"/>
+        <line num="139" type="stmt" count="4"/>
+        <line num="140" type="stmt" count="0"/>
+        <line num="141" type="stmt" count="0"/>
+        <line num="142" type="stmt" count="4"/>
+        <line num="143" type="stmt" count="0"/>
+        <line num="144" type="stmt" count="0"/>
+        <line num="146" type="stmt" count="4"/>
+        <line num="149" type="stmt" count="4"/>
+        <line num="150" type="stmt" count="4"/>
+        <line num="153" type="stmt" count="0"/>
+        <line num="156" type="method" name="parseAttributes" visibility="private" complexity="9" crap="9.04" count="7"/>
+        <line num="158" type="stmt" count="7"/>
+        <line num="159" type="stmt" count="5"/>
+        <line num="161" type="stmt" count="4"/>
+        <line num="162" type="stmt" count="4"/>
+        <line num="163" type="stmt" count="4"/>
+        <line num="164" type="stmt" count="4"/>
+        <line num="166" type="stmt" count="4"/>
+        <line num="167" type="stmt" count="4"/>
+        <line num="168" type="stmt" count="4"/>
+        <line num="170" type="stmt" count="4"/>
+        <line num="171" type="stmt" count="4"/>
+        <line num="172" type="stmt" count="0"/>
+        <line num="173" type="stmt" count="0"/>
+        <line num="174" type="stmt" count="4"/>
+        <line num="175" type="stmt" count="2"/>
+        <line num="176" type="stmt" count="2"/>
+        <line num="177" type="stmt" count="4"/>
+        <line num="178" type="stmt" count="3"/>
+        <line num="179" type="stmt" count="3"/>
+        <line num="180" type="stmt" count="4"/>
+        <line num="182" type="stmt" count="4"/>
+        <line num="183" type="stmt" count="4"/>
+        <line num="185" type="stmt" count="4"/>
+        <line num="188" type="stmt" count="4"/>
+        <line num="189" type="stmt" count="3"/>
+        <line num="191" type="stmt" count="3"/>
+        <metrics loc="195" ncloc="193" classes="1" methods="6" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="104" coveredstatements="94" elements="110" coveredelements="97"/>
+      </file>
       <file name="/var/www/html/src/QueryBuilder/Service/QueryBuilder.php">
         <class name="Tbessenreither\XPathScraper\QueryBuilder\Service\QueryBuilder" namespace="Tbessenreither\XPathScraper\QueryBuilder\Service">
           <metrics complexity="3" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="5" elements="7" coveredelements="7"/>
         </class>
-        <line num="14" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="1"/>
-        <line num="17" type="stmt" count="1"/>
-        <line num="19" type="method" name="getXPathSelector" visibility="public" complexity="2" crap="2" count="1"/>
-        <line num="22" type="stmt" count="1"/>
-        <line num="24" type="stmt" count="1"/>
-        <line num="25" type="stmt" count="1"/>
-        <line num="28" type="stmt" count="1"/>
+        <line num="14" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="8"/>
+        <line num="17" type="stmt" count="8"/>
+        <line num="19" type="method" name="getXPathSelector" visibility="public" complexity="2" crap="2" count="8"/>
+        <line num="22" type="stmt" count="8"/>
+        <line num="24" type="stmt" count="8"/>
+        <line num="25" type="stmt" count="8"/>
+        <line num="28" type="stmt" count="8"/>
         <metrics loc="32" ncloc="27" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="5" elements="7" coveredelements="7"/>
       </file>
     </package>
@@ -217,6 +333,6 @@
         <metrics loc="147" ncloc="129" classes="1" methods="6" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="63" coveredstatements="56" elements="69" coveredelements="59"/>
       </file>
     </package>
-    <metrics files="10" loc="480" ncloc="443" classes="9" methods="32" coveredmethods="26" conditionals="0" coveredconditionals="0" statements="117" coveredstatements="107" elements="149" coveredelements="133"/>
+    <metrics files="11" loc="675" ncloc="636" classes="10" methods="38" coveredmethods="29" conditionals="0" coveredconditionals="0" statements="221" coveredstatements="201" elements="259" coveredelements="230"/>
   </project>
 </coverage>

@@ -6,4 +6,4 @@
 echo "run coverage tests"
 
 export XDEBUG_MODE=coverage
-php vendor/bin/phpunit --coverage-clover public/coverage/coverage.xml
+php vendor/bin/phpunit --coverage-clover public/coverage/coverage.xml --display-warnings

@@ -10,6 +10,7 @@ A Symfony bundle for extracting data from HTML using expressive, composable XPat
 - Extract text, HTML, attributes, or custom data from HTML documents
 - Chain queries to traverse and filter DOM nodes
 - Designed for integration with Symfony and modern PHP
+- **NEW:** Use CSS selectors directly with the [CSS Query Builder](README.CssQueryBuilder.md)
 
 ---
 
@@ -40,7 +41,6 @@ A Symfony bundle for extracting data from HTML using expressive, composable XPat
    ```
 
 ---
-
 
 ## Query Builder
 
@@ -97,6 +97,20 @@ foreach ($extractions as $extraction) {
 }
 ```
 
+
+## Usage Example: CSS Query Builder
+
+You can now use CSS selectors directly:
+
+```php
+use Tbessenreither\XPathScraper\QueryBuilder\Service\CssQueryBuilder;
+
+$builder = new CssQueryBuilder('div.outer');
+$xpath = $builder->getXPathSelector();
+// $xpath now contains the XPath for div.outer
+```
+
+See [README.CssQueryBuilder.md](README.CssQueryBuilder.md) for more details and advanced usage.
 
 ## Requirements
 
