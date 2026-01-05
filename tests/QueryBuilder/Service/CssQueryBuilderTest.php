@@ -174,6 +174,38 @@ class CssQueryBuilderTest extends TestCase
                 ]),
             ]))->getXPathSelector(),
         ];
+
+        yield [
+            'div.outer,div.test div.footer a.link',
+            (new QueryBuilder([
+                new LogicWrapper(LogicWrapper::OR , [
+                    new QueryElement(
+                        'div',
+                        [
+                            new QueryClass('outer', QueryClass::EXACT),
+                        ]
+                    ),
+                    new QueryElement(
+                        'div',
+                        [
+                            new QueryClass('test', QueryClass::EXACT),
+                        ]
+                    ),
+                ]),
+                new QueryElement(
+                    'div',
+                    [
+                        new QueryClass('footer', QueryClass::EXACT),
+                    ]
+                ),
+                new QueryElement(
+                    'a',
+                    [
+                        new QueryClass('link', QueryClass::EXACT),
+                    ]
+                ),
+            ]))->getXPathSelector(),
+        ];
     }
 
 }

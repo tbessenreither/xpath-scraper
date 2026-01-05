@@ -12,6 +12,7 @@ use Tbessenreither\XPathScraper\QueryBuilder\Service\QueryBuilder;
 use Tbessenreither\XPathScraper\Service\Scraper;
 use Tbessenreither\XPathScraper\Dto\ExtractionDto;
 use Tbessenreither\XPathScraper\Dto\ExtractionsDto;
+use Tbessenreither\XPathScraper\QueryBuilder\Service\CssQueryBuilder;
 
 #[CoversClass(Scraper::class)]
 #[UsesClass(QueryBuilder::class)]
@@ -20,6 +21,7 @@ use Tbessenreither\XPathScraper\Dto\ExtractionsDto;
 #[UsesClass(QueryClass::class)]
 #[UsesClass(ExtractionDto::class)]
 #[UsesClass(ExtractionsDto::class)]
+#[UsesClass(CssQueryBuilder::class)]
 
 
 class ScraperTest extends TestCase
@@ -136,6 +138,13 @@ class ScraperTest extends TestCase
             Scraper::EXTRACT_TEXT,
         ]);
         $this->assertCount(2, $extractions);
+    }
+
+    public function testLogicWrapperEdgeCase(): void
+    {
+        $scraper = new Scraper($this->html);
+        $result = $scraper->get(new CssQueryBuilder('div.outer,div.^container- div.footer a.link'));
+        $this->assertNotNull($result, 'Node should be found by LogicWrapper with one valid branch');
     }
 
 }

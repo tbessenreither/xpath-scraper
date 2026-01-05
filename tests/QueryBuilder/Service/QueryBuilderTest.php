@@ -72,7 +72,7 @@ class QueryBuilderTest extends TestCase
 
         $xpath = $builder->getXPathSelector();
         $expected = "//div[(contains(concat(' ', normalize-space(@class), ' '), ' outer ' ) or starts-with(normalize-space(@class), 'container-'))]"
-            . "/(div[(@data-role='main' and @data-active='true')] or span[(@data-role='main' and @data-active='true')])"
+            . "/div[(@data-role='main' and @data-active='true')] | span[(@data-role='main' and @data-active='true')]"
             . "/a[(contains(@class, 'link'))][(starts-with(@href, '/home') or (starts-with(@href, '/about') and substring(@href, string-length(@href) - string-length('/us') + 1) = '/us'))]";
         $this->assertEquals($expected, $xpath);
     }

@@ -18,6 +18,14 @@ class LogicWrapper implements SelectorInterface
 
     public function getXPathSelector(?string $context = null): string
     {
+        if ($this->type === self::OR && $this->allChildrenAreElements()) {
+            // Node set union: join with |
+            $paths = array_map(fn($child) => $child->getXPathSelector($context), $this->children);
+
+            return implode(' | ', $paths);
+        }
+
+        // Predicate-level logic
         $selectors = array_map(function ($child) use ($context) {
             return $child->getXPathSelector($context);
         }, $this->children);
@@ -25,6 +33,17 @@ class LogicWrapper implements SelectorInterface
         $expr = implode($glue, $selectors);
 
         return '(' . $expr . ')';
+    }
+
+    private function allChildrenAreElements(): bool
+    {
+        foreach ($this->children as $child) {
+            if (!($child instanceof QueryElement)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }
